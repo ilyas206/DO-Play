@@ -158,31 +158,32 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     }
 
     const displayTodos = () => {
+        const currentYear = new Date().getFullYear().toString()
         return todos.map(todo => {
             const newDate = new Date(todo.date)
             const day = newDate.getDate().toString()
             const month = newDate.toLocaleDateString("en-GB", { month: "short" })
-            const year = newDate.getFullYear().toString().slice(2)
+            const year = newDate.getFullYear().toString()
             let [hours, minutes] = todo.time.split(":")
 
-            const rowStyle = `text-center py-2 ${todo.done ? 'done-row' : ''}`
+            const rowStyle = `text-center ${todo.done ? 'done-row' : ''}`
             return <tr key={todo.id} onClick={() => handleViewClick(todo)} className={rowStyle}>
                 <td><input type="checkbox" 
                 className="form-check-input"
                 checked={todo.done} 
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => {onToggleTodo(todo.id); e.stopPropagation()}}/></td>
-                <td><b>{day} {month}</b> - {year}</td>
+                <td><b>{day} {month}{currentYear !== year && ` - ${year}`}</b></td>
                 <td>{hours} <b>:</b> {minutes}</td>
                 <td>{todo.label}</td>
-                <td className="d-flex justify-content-center align-items-center gap-2">
+                <td className="d-flex justify-content-center align-items-center gap-2 pt-">
                     <button className="btn btn-outline-info d-flex align-items-center justify-content-center" title="Update Todo" onClick={(e) => {handleUpdateClick(todo); e.stopPropagation()}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 17 17">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" className="bi bi-pencil-fill" viewBox="0 0 17 17">
                         <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
                         </svg>
                     </button>
                     <button type="button" className="btn btn-outline-danger d-flex align-items-center justify-content-center" title="Delete Todo" onClick={(e) => {handleDeleteClick(todo); e.stopPropagation()}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-calendar-x-fill" viewBox="0 0 17 17">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" className="bi bi-calendar-x-fill" viewBox="0 0 17 17">
                         <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M6.854 8.146 8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 1 1 .708-.708"/>
                         </svg>
                     </button>
@@ -209,6 +210,28 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         setAnchorEl(null)
     }
 
+    const viewDeletingTodo = () => {
+        const newDate = new Date(selectedTodo.date)
+        const day = newDate.getDate().toString()
+        const month = newDate.toLocaleDateString("en-GB", { month: "short" })
+        const year = newDate.getFullYear().toString()
+
+        let [hours, minutes] = selectedTodo.time.split(":");
+
+        if(selectedTodo){
+            return <div className="modal-body">
+                <p><span className="display-6">{hours}</span> : {minutes}</p>
+                <div className="d-flex align-items-center justify-content-between fw-light">
+                    <h3>{selectedTodo.label}</h3>
+                    <p><span className="display-6">{day} {month}</span> {year}</p>
+                </div>
+                <p className="fw-light text-muted">{selectedTodo.details}</p>
+            </div> 
+        }return <div className="modal-body">
+                <p className="fw-10">No Todo selected</p>
+            </div>
+    }
+
     const viewingTodo = () => {
         const viewDate = new Date(selectedTodo.date)
         const weekDay = viewDate.toLocaleDateString("en-GB", { weekday: "short" })
@@ -226,10 +249,8 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     <span className="display-6">{hours}</span>
                     <span> : {minutes}</span>
                 </div>
-
                 <div className="fw-light">
                     <span className="display-6">{weekDay} {day}</span>
-                    
                     <span> {month} {year}</span>
                 </div>
             </div>
@@ -284,7 +305,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             <div className="d-flex align-items-center justify-content-between">
                 <h2>TODOs List</h2>
                 <button className="btn btn-outline-success d-flex align-items-center justify-content-center" title="Add Todo" onClick={handleAddClick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-plus-fill" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar-plus-fill" viewBox="0 0 16 16">
                     <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8.5 8.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5a.5.5 0 0 1 1 0"/>
                     </svg>
                 </button>
@@ -310,7 +331,9 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         todos.length > 0 ? 
                         displayTodos() :
                         <tr>
-                            <td colSpan={6} align="center">Your schedule is free</td>
+                            <td colSpan={6} align="center">
+                                {filter === "Only done" ? "No done Todos yet" : "Your schedule is free"}
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -471,16 +494,9 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         aria-label="Close"
                     ></button>
                     </div>
-                    {
-                        selectedTodo ? 
-                        <div className="modal-body">
-                            <h4>{selectedTodo.label}</h4>
-                            <p>{selectedTodo.details}</p>
-                        </div>
-                        : <div className="modal-body">
-                            <p className="fw-10">No Todo selected</p>
-                        </div>
-                    }
+
+                    {selectedTodo && viewDeletingTodo()}
+
                     <div className="modal-footer d-flex justify-content-between">
                         {
                             !selectedTodo?.done && <span className="text-danger">

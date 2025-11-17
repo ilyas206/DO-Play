@@ -14,7 +14,7 @@ const INITIAL_STATE = [
         id : 2,
         label : "Buy groceries",
         details : "Milk, eggs, bread, vegetables, and coffee",
-        date : "2025-11-16",
+        date : "2026-11-16",
         time : "10:30",
         done : false
     },
