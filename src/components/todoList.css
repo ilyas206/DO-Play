@@ -4,9 +4,10 @@
   -webkit-transition: background-color .32s ease-in-out, color .32s ease-in-out, border-top-color .32s ease-in-out;
 }
 
-.table > tbody > tr input {
+.table > tbody > tr input, .done {
   cursor: pointer;
 }
+
 
 /* default non-done rows keep transparent background so transition can animate from/to */
 .table > tbody > tr:not(.done-row) > * {

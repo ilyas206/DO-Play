@@ -9,7 +9,7 @@ export const validateForm = (label, details, date, time, setErrors) => {
 
     // Title validation
 
-    const maxLabelLength = 20
+    const maxLabelLength = 25
 
     if(labelValue.trim() === ''){
         setErrors(prevState => {
