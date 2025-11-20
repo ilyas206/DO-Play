@@ -83,8 +83,8 @@ export default function App() {
         setTodos(prevState => prevState.filter(todo => todo.id !== id))
     }
 
-    const handleUpdateTodo = updatedTodo => {
-        setTodos(prevState => prevState.map(todo => (todo.id === updatedTodo.id) ? updatedTodo : todo))
+    const handleEditTodo = editedTodo => {
+        setTodos(prevState => prevState.map(todo => (todo.id === editedTodo.id) ? editedTodo : todo))
     }
 
     const toggleTodo = id => {
@@ -93,7 +93,7 @@ export default function App() {
     
     return(
         <div className="container m-5">
-            <TodoList filter={filter} setFilter={setFilter} onToggleTodo={toggleTodo} onAddTodo={handleAddTodo} onDeleteTodo={handleDeleteTodo} onUpdateTodo={handleUpdateTodo} todos={filteredTodos} />
+            <TodoList filter={filter} setFilter={setFilter} onToggleTodo={toggleTodo} onAddTodo={handleAddTodo} onDeleteTodo={handleDeleteTodo} onEditTodo={handleEditTodo} todos={filteredTodos} />
         </div>
     )
 }

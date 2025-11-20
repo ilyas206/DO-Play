@@ -8,6 +8,18 @@
   cursor: pointer;
 }
 
+.table > tbody > tr {
+  transition: all .5s;
+}
+
+.table > tbody > tr:hover {
+  background-color: rgb(45, 45, 52);
+}
+
+.title {
+  color : #81eb8a;
+}
+
 
 /* default non-done rows keep transparent background so transition can animate from/to */
 .table > tbody > tr:not(.done-row) > * {
@@ -17,7 +29,7 @@
 
 /* done row style (target cells) */
 .table > tbody > tr.done-row > * {
-  background-color: rgba(74, 81, 95, 0.9); /* friendly dark-ish */
+  background-color: rgba(74, 95, 79, 0.9); 
   color: #e6eef6; /* soft light text */
 }
 
@@ -28,6 +40,89 @@
 
 /* ensure borders and td text inherit */
 .table > tbody > tr.done-row td {
-  border-top-color: rgba(255,255,255,0.04);
+  border-top-color: rgba(172, 32, 32, 0.04);
   color: inherit;
 }
+
+/* From Uiverse.io by cssbuttons-io */ 
+.cbx {
+ margin-top: 8px;
+ margin-bottom: 9px;
+ position: relative;
+ width: 27px;
+ height: 27px;
+ border: 1px solid #c8ccd4;
+ border-radius: 3px;
+ transition: background 0.1s ease;
+ cursor: pointer;
+ display: block;
+}
+
+.cbx:after {
+ content: '';
+ position: absolute;
+ top: 4px;
+ left: 9px;
+ width: 7px;
+ height: 14px;
+ opacity: 0;
+ transform: rotate(45deg) scale(0);
+ border-right: 2px solid #fff;
+ border-bottom: 2px solid #fff;
+ transition: all 0.3s ease;
+ transition-delay: 0.15s;
+}
+
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx {
+ border-color: transparent;
+ background: #36a940;
+ animation: jelly 0.6s ease;
+}
+
+input[type="checkbox"][id="cbx-edit"]:checked ~ .cbx {
+ border-color: transparent;
+ background: #81e9ebff;
+ animation: jelly 0.6s ease;
+}
+
+
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx:after {
+ opacity: 1;
+ transform: rotate(45deg) scale(1);
+}
+
+
+@keyframes jelly {
+ from {
+  transform: scale(1, 1);
+ }
+
+ 30% {
+  transform: scale(1.25, 0.75);
+ }
+
+ 40% {
+  transform: scale(0.75, 1.25);
+ }
+
+ 50% {
+  transform: scale(1.15, 0.85);
+ }
+
+ 65% {
+  transform: scale(0.95, 1.05);
+ }
+
+ 75% {
+  transform: scale(1.05, 0.95);
+ }
+
+ to {
+  transform: scale(1, 1);
+ }
+}
+
+.hidden-xs-up {
+ display: none !important;
+}
+
