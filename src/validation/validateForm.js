@@ -1,10 +1,12 @@
-export const validateForm = (label, details, date, time, setErrors) => {
+export const validateForm = (label, details, date, time, tag, setErrors) => {
     setErrors({})
     
     const labelValue = label.current.value
     const detailsValue = details.current.value
+    const tagValue = tag.current.value
     const dateValue = date.current.value
     const timeValue = time.current.value
+
     let isFormValid = true
 
     // Title validation
@@ -55,6 +57,18 @@ export const validateForm = (label, details, date, time, setErrors) => {
         isFormValid = false
     }
 
+    // Tag validation
+
+    if(tagValue === ''){
+        setErrors(prevState => {
+            return {
+                ...prevState,
+                ...{tag : "A tag should be selected"}
+            }
+        })
+        isFormValid = false
+    }
+
     // Date validation
 
     if(dateValue.trim() === ''){
@@ -100,16 +114,32 @@ export const validateForm = (label, details, date, time, setErrors) => {
         })
         isFormValid = false
     }else {
-        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
-        if(!timeRegex.test(timeValue)) {
-            setErrors(prevState => ({
-                ...prevState,
-                time: "Invalid time format (HH:MM)"
-            }));
-            isFormValid = false;
+        // get current hours/minutes
+        const now = new Date()
+        const currentHours = now.getHours()
+        const currentMinutes = now.getMinutes()
+
+        // normalize selected date (remove time part)
+        const selectedDate = new Date(dateValue)
+        selectedDate.setHours(0, 0, 0, 0)
+
+        // if selected date is today, ensure selected time is in the future
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        // parse timeValue "HH:MM"
+        const [selH, selM] = timeValue.split(':').map(v => Number(v))
+
+        if (selectedDate.getTime() === today.getTime()) {
+            if (isNaN(selH) || isNaN(selM)) {
+                setErrors(prevState => ({ ...prevState, time: "Invalid time format" }))
+                isFormValid = false
+            } else if (selH < currentHours || (selH === currentHours && selM <= currentMinutes)) {
+                setErrors(prevState => ({ ...prevState, time: "Time cannot be in the past" }))
+                isFormValid = false
+            }
         }
     }
-
-
+    
     return isFormValid
 }

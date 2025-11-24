@@ -1,1 +1,1 @@
-adding filtering system for month and done, undone todos
+add a button under app title for filtering instead of header row filtering

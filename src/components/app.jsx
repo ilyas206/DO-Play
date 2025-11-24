@@ -8,6 +8,7 @@ const INITIAL_STATE = [
         details : "Complete the quarterly report and submit to manager",
         date : "2025-11-20",
         time : "17:00",
+        tag : "Work",
         done : true
     },
     {
@@ -16,6 +17,7 @@ const INITIAL_STATE = [
         details : "Milk, eggs, bread, vegetables, and coffee",
         date : "2026-11-16",
         time : "10:30",
+        tag : "Shopping",
         done : false
     },
     {
@@ -24,6 +26,7 @@ const INITIAL_STATE = [
         details : "Annual checkup with Dr. Smith at clinic",
         date : "2025-11-18",
         time : "14:00",
+        tag : "Health",
         done : false
     },
     {
@@ -32,6 +35,7 @@ const INITIAL_STATE = [
         details : "Discuss Q4 goals and project timeline",
         date : "2025-11-17",
         time : "09:00",
+        tag : "Work",
         done : true
     },
     {
@@ -40,6 +44,7 @@ const INITIAL_STATE = [
         details : "Online payment due before end of month",
         date : "2025-11-25",
         time : "16:30",
+        tag : "Home",
         done : false
     },
     {
@@ -48,6 +53,7 @@ const INITIAL_STATE = [
         details : "Weekly check-in call",
         date : "2025-11-22",
         time : "19:00",
+        tag : "Personal",
         done : false
     }
 ]
@@ -57,10 +63,23 @@ export default function App() {
     const [todos, setTodos] = useState(INITIAL_STATE)
     const [filter, setFilter] = useState("All")
 
-    const filteredTodos = todos.filter(todo => {
-        if(filter === "Only done") return todo.done === true ;
-        if(filter === "Only undone") return todo.done === false ;
-        return true ;
+    const sortedTodos = [...todos].sort((a, b) => {
+        const da = new Date(`${a.date}T${a.time || '00:00'}`);
+        const db = new Date(`${b.date}T${b.time || '00:00'}`);
+        return da - db;
+    });
+
+    const filteredTodos = sortedTodos.filter(todo => {
+        switch(filter) {
+            case "Only done" : return todo.done === true ;
+            case "Only undone" : return todo.done === false ;
+            case "Work Todos" : return todo.tag === 'Work' ;
+            case "Personal Todos" : return todo.tag === 'Personal' ;
+            case "Home Todos" : return todo.tag === 'Home' ;
+            case "Health Todos" : return todo.tag === 'Health' ;
+            case "Shopping Todos" : return todo.tag === 'Shopping' ;
+            default : return true ;
+        }
     })
 
     const handleAddTodo = newTodo => {
@@ -71,6 +90,7 @@ export default function App() {
                     id : newTodo.id,
                     label : newTodo.label,
                     details : newTodo.details,
+                    tag : newTodo.tag,
                     date : newTodo.date,
                     time : newTodo.time,
                     done : false
