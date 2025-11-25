@@ -35,7 +35,7 @@ const INITIAL_STATE = [
         details : "Discuss Q4 goals and project timeline",
         date : "2025-11-17",
         time : "09:00",
-        tag : "Work",
+        tag : "Other",
         done : true
     },
     {
@@ -62,14 +62,16 @@ export default function App() {
 
     const [todos, setTodos] = useState(INITIAL_STATE)
     const [filter, setFilter] = useState("All")
+    const [search, setSearch] = useState('')
 
+    // sorting todos by date and time
     const sortedTodos = [...todos].sort((a, b) => {
         const da = new Date(`${a.date}T${a.time || '00:00'}`);
         const db = new Date(`${b.date}T${b.time || '00:00'}`);
         return da - db;
     });
 
-    const filteredTodos = sortedTodos.filter(todo => {
+    const filteredByCategory = sortedTodos.filter(todo => {
         switch(filter) {
             case "Only done" : return todo.done === true ;
             case "Only undone" : return todo.done === false ;
@@ -78,9 +80,14 @@ export default function App() {
             case "Home Todos" : return todo.tag === 'Home' ;
             case "Health Todos" : return todo.tag === 'Health' ;
             case "Shopping Todos" : return todo.tag === 'Shopping' ;
+            case "Other Todos" : return todo.tag === 'Other' ;
             default : return true ;
         }
     })
+
+    const filteredTodos = filteredByCategory.filter(todo =>
+        todo.label.toLowerCase().includes(search.trim().toLowerCase())
+    )
 
     const handleAddTodo = newTodo => {
         setTodos(prevState => {
@@ -113,7 +120,7 @@ export default function App() {
     
     return(
         <div className="container m-5">
-            <TodoList filter={filter} setFilter={setFilter} onToggleTodo={toggleTodo} onAddTodo={handleAddTodo} onDeleteTodo={handleDeleteTodo} onEditTodo={handleEditTodo} todos={filteredTodos} />
+            <TodoList filter={filter} setFilter={setFilter} setSearch={setSearch} onToggleTodo={toggleTodo} onAddTodo={handleAddTodo} onDeleteTodo={handleDeleteTodo} onEditTodo={handleEditTodo} todos={filteredTodos} />
         </div>
     )
 }

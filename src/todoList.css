@@ -16,11 +16,6 @@
   background-color: rgb(45, 45, 52);
 }
 
-.title {
-  color : #81eb8a;
-}
-
-
 /* default non-done rows keep transparent background so transition can animate from/to */
 .table > tbody > tr:not(.done-row) > * {
   background-color: transparent;

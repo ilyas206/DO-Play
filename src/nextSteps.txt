@@ -1,1 +1,2 @@
-add a button under app title for filtering instead of header row filtering
+replacing default inputs border (primary-blue border) with a green/light blue one
+get rid of default shadow

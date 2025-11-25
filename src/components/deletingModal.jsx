@@ -4,6 +4,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 export default function DeletingModal({selectedTodo, onConfirmDelete}) {
 
@@ -13,6 +14,7 @@ export default function DeletingModal({selectedTodo, onConfirmDelete}) {
             case 'Work' : return "#A8C9F0"
             case 'Home' : return "#F3E7B3"
             case 'Health' : return "#B8F2C5"
+            case 'Other' : return "#c9cfcbff"
             default : return "#D5C7F7"
         }
     }
@@ -23,6 +25,7 @@ export default function DeletingModal({selectedTodo, onConfirmDelete}) {
             case 'Work' : return <WorkIcon />
             case 'Home' : return <HomeIcon />
             case 'Health' : return <MonitorHeartIcon/>
+            case 'Other' : return <MoreHorizIcon/>
             default : return <ShoppingCartIcon/>
         }
     }
