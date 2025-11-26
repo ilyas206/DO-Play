@@ -1,34 +1,8 @@
 import { Box, Button } from "@mui/material";
-import WorkIcon from '@mui/icons-material/Work';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { DANGER_COLOR } from "../style";
+import { handleTagColor, handleTagIcon } from "../tags";
 
 export default function DeletingModal({selectedTodo, onConfirmDelete}) {
-
-    const handleTagColor = tag => {
-        switch(tag) {
-            case 'Personal' : return "#F7BFBF"
-            case 'Work' : return "#A8C9F0"
-            case 'Home' : return "#F3E7B3"
-            case 'Health' : return "#B8F2C5"
-            case 'Other' : return "#c9cfcbff"
-            default : return "#D5C7F7"
-        }
-    }
-
-    const handleTagIcon = tag => {
-        switch(tag) {
-            case 'Personal' : return <PersonIcon />
-            case 'Work' : return <WorkIcon />
-            case 'Home' : return <HomeIcon />
-            case 'Health' : return <MonitorHeartIcon/>
-            case 'Other' : return <MoreHorizIcon/>
-            default : return <ShoppingCartIcon/>
-        }
-    }
 
     const viewDeletingTodo = () => {
         const newDate = new Date(selectedTodo.date)
@@ -98,7 +72,7 @@ export default function DeletingModal({selectedTodo, onConfirmDelete}) {
 
                 <div className="modal-footer d-flex justify-content-between">
                     {
-                        !selectedTodo?.done && <span style={{color : "#ea7c7cff"}}>
+                        !selectedTodo?.done && <span style={{color : DANGER_COLOR}}>
                             This todo is undone !
                         </span>
                     }
@@ -107,9 +81,9 @@ export default function DeletingModal({selectedTodo, onConfirmDelete}) {
                             type="button" 
                             variant="outlined" 
                             sx={{
-                                borderColor: "#ea7c7cff", 
+                                borderColor: DANGER_COLOR, 
                                 borderRadius : "10px",   
-                                color: "#ea7c7cff",
+                                color: DANGER_COLOR,
                             }} 
                             onClick={onConfirmDelete}
                             data-bs-dismiss="modal">

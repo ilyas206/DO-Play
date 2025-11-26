@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Modal } from 'bootstrap';
 import { validateForm } from "../validation/validateForm";
 import Alert from '@mui/material/Alert';
@@ -11,12 +11,6 @@ import DangerousIcon from '@mui/icons-material/Dangerous';
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import WorkIcon from '@mui/icons-material/Work';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -24,7 +18,8 @@ import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import "../todoList.css";
 import DeletingModal from "./deletingModal";
-import { MAIN_COLOR } from "../style";
+import { DANGER_COLOR, MAIN_COLOR, SECOND_COLOR } from "../style";
+import { handleTagColor, handleTagIcon } from "../tags";
 
 const IOSSwitch = styled((props) => (
     <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -40,11 +35,11 @@ const IOSSwitch = styled((props) => (
         transform: 'translateX(16px)',
         color: '#fff',
         '& + .MuiSwitch-track': {
-            backgroundColor: '#81e9ebff',
+            backgroundColor: SECOND_COLOR,
             opacity: 1,
             border: 0,
             ...theme.applyStyles('dark', {
-            backgroundColor: '#81e9ebff',
+            backgroundColor: SECOND_COLOR,
             }),
         },
         '&.Mui-disabled + .MuiSwitch-track': {
@@ -52,7 +47,7 @@ const IOSSwitch = styled((props) => (
         },
         },
         '&.Mui-focusVisible .MuiSwitch-thumb': {
-        color: '#81e9ebff',
+        color: SECOND_COLOR,
         border: '6px solid #fff',
         },
         '&.Mui-disabled .MuiSwitch-thumb': {
@@ -97,7 +92,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
 
     const [isAddFormValid, setIsAddFormValid] = useState(false)
     const [isEditFormValid, setIsEditFormValid] = useState(true)
-    const [currentId, setCurrentId] = useState(7)
+    const [currentId, setCurrentId] = useState(21)
     
     useEffect(() => {
         const id = setInterval(() => setCurrentDate(new Date()), 60000)
@@ -123,10 +118,10 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         return(
             <>
                 <input type="text" 
-                className={`form-control mt-1 ${errors['label'] ? 'border-danger' : ''}`} 
+                className={`form-control mt-1 shadow-none ${errors['label'] ? 'red-input-border' : 'green-input-border'}`} 
                 ref={label}
                 />
-                {errors['label'] && <div className="text-danger mb-2">{errors['label']}</div>}
+                {errors['label'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['label']}</div>}
             </>
         )
     }
@@ -134,17 +129,18 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     const displayTagSelect = () => {
         return(
             <>
-                <select className={`form-select mt-1 ${errors['tag'] ? 'border-danger' : ''}`} ref={tag}>
+                <select className={`form-select mt-1 shadow-none ${errors['tag'] ? 'red-input-border' : 'green-input-border'}`} ref={tag}>
                     <option value="">Select a Tag</option>
                     <option value="Personal">Personal</option>
                     <option value="Work">Work</option>
                     <option value="Home">Home</option>
                     <option value="Health">Health</option>
+                    <option value="Sport">Sport</option>
                     <option value="Shopping">Shopping</option>
                     <option value="Other">Other...</option>
                 </select>
 
-                {errors['tag'] && <div className="text-danger mb-2">{errors['tag']}</div>}
+                {errors['tag'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['tag']}</div>}
             </>
         )
     }
@@ -153,10 +149,10 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         return(
             <>
                 <textarea
-                className={`form-control mt-1 ${errors['details'] ? 'border-danger' : ''}`} 
+                className={`form-control mt-1 shadow-none ${errors['details'] ? 'red-input-border' : 'green-input-border'}`} 
                 ref={details}
                 ></textarea>
-                {errors['details'] && <div className="text-danger mb-2">{errors['details']}</div>}
+                {errors['details'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['details']}</div>}
             </>
         )
     }
@@ -164,11 +160,11 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     const displayOtherInputs = fieldName => {
         return(
             <>
-                <input type={fieldName === 'date' ? 'date' : 'time'}
-                className={`form-control mt-1 ${errors[fieldName] ? 'border-danger' : ''}`} 
+                <input type={fieldName}
+                className={`form-control mt-1 shadow-none ${errors[fieldName] ? 'red-input-border' : 'green-input-border'}`} 
                 ref={fieldName === 'date' ? date : time}
                 />
-                {errors[fieldName] && <div className="text-danger mb-2">{errors[fieldName]}</div>}
+                {errors[fieldName] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors[fieldName]}</div>}
             </>
         )
     }
@@ -204,6 +200,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         label.current.value = ''
         details.current.value = ''
         date.current.value = ''
+        tag.current.value = ''
         time.current.value = ''
     }
 
@@ -268,28 +265,6 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         }
     }
 
-    const handleTagColor = tag => {
-        switch(tag) {
-            case 'Personal' : return "#F7BFBF"
-            case 'Work' : return "#A8C9F0"
-            case 'Home' : return "#F3E7B3"
-            case 'Health' : return "#B8F2C5"
-            case 'Other' : return "#c9cfcbff"
-            default : return "#D5C7F7"
-        }
-    }
-
-    const handleTagIcon = tag => {
-        switch(tag) {
-            case 'Personal' : return <PersonIcon/>
-            case 'Work' : return <WorkIcon/>
-            case 'Home' : return <HomeIcon/>
-            case 'Health' : return <MonitorHeartIcon/>
-            case 'Other' : return <MoreHorizIcon/>
-            default : return <ShoppingCartIcon/>
-        }
-    }
-
     const displayTodos = () => {
         const currentYear = new Date().getFullYear().toString()
         return todos.map(todo => {
@@ -301,7 +276,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
 
             const rowStyle = `text-center ${todo.done ? 'done-row' : ''}`
             const checkBoxId = `cbx-${todo.id}`
-            const deleteIconColor = todo.done ? "#ea7c7cff" : "#9e9e9eff"
+            const deleteIconColor = todo.done ? DANGER_COLOR : "#9e9e9eff"
             
             return <tr key={todo.id} onClick={() => handleViewClick(todo)} className={rowStyle}>
                 <td className="d-flex align-items-center justify-content-center">
@@ -332,7 +307,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     </Box>
                 </td>
                 <td className="d-flex justify-content-center align-items-center gap-2">
-                    <IconButton sx={{color : "#81e9ebff", marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleEditClick(todo); e.stopPropagation()}} aria-label="Edit">
+                    <IconButton sx={{color : SECOND_COLOR, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleEditClick(todo); e.stopPropagation()}} aria-label="Edit">
                         <EditIcon />
                     </IconButton>
                     <IconButton sx={{color : deleteIconColor, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleDeleteClick(todo); e.stopPropagation()}} aria-label="Delete">
@@ -343,7 +318,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         })
     }
 
-    const handleAddChange = () => {
+    const handleAddChange = selectedOptionOrEvent => {
         const isValid = validateForm(label, details, date, time, tag, setErrors)
         setIsAddFormValid(isValid)
     }
@@ -391,35 +366,54 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         }
 
         return(
-            <div className="row align-items-center my-3 w-100 g-1">
-                <div className="col-8">
-                    <input type="text" className="form-control" placeholder="Search by label" ref={searchRef}/>
-                </div>
-                <div className="col-3">
-                    <select className="form-select" ref={filterRef}>
-                        <option value="">Filter Todos</option>
-                        <option value="Only done">Only Done</option>
-                        <option value="Only undone">Only Undone</option>
-                        <option value="Work Todos">Work</option>
-                        <option value="Personal Todos">Personal</option>
-                        <option value="Home Todos">Home</option>
-                        <option value="Health Todos">Health</option>
-                        <option value="Shopping Todos">Shopping</option>
-                    </select>
-                </div>
-                <div className="col-auto d-flex align-items-center gap-1">
-                    <IconButton sx={{color : MAIN_COLOR}} onClick={handleSearch} aria-label="Edit">
-                        <SearchIcon />
-                    </IconButton>
-                    <IconButton sx={{color : "#9e9e9eff"}} onClick={handleReset} aria-label="Reset">
-                        <RestartAltIcon />
-                    </IconButton>
+            <div className="row align-items-center my-3 w-100 g-2">
+
+            <div className="col-6">
+                <input
+                type="text"
+                className="form-control shadow-none green-input-border"
+                placeholder="Search by label"
+                ref={searchRef}
+                />
+            </div>
+
+            <div className="col-3">
+                <select
+                className="form-select shadow-none green-input-border"
+                ref={filterRef}
+                >
+                <option value="">Filter Todos</option>
+                <option value="Only done">Only Done</option>
+                <option value="Only undone">Only Undone</option>
+                <option value="Work Todos">Work</option>
+                <option value="Personal Todos">Personal</option>
+                <option value="Home Todos">Home</option>
+                <option value="Health Todos">Health</option>
+                <option value="Sport Todos">Sport</option>
+                <option value="Shopping Todos">Shopping</option>
+                </select>
+            </div>
+
+            <div className="col-2 d-flex align-items-center gap-2 justify-content-center w-auto">
+                <IconButton sx={{ color: MAIN_COLOR }} onClick={handleSearch}>
+                <SearchIcon />
+                </IconButton>
+
+                <IconButton sx={{ color: "#9e9e9eff" }} onClick={handleReset}>
+                <RestartAltIcon />
+                </IconButton>
+            </div>
+
+            <div className="col-auto d-flex align-items-center">
+                <div className="vr mx-3 mt-1" style={{ height: "28px", opacity: 0.4 }}></div>
+                    <h3 className="fw-light mb-0">{todos.length} Todo(s)</h3>
                 </div>
             </div>
+
         )
     }
 
-    const viewingTodo = () => {
+    const viewingTodo = useCallback(() => {
         const viewDate = new Date(selectedTodo.date)
         const weekDay = viewDate.toLocaleDateString("en-GB", { weekday: "short" })
         const day = viewDate.getDate().toString()
@@ -467,7 +461,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                 
             <p className="fw-light text-muted">{selectedTodo.details}</p>
         </div>)
-    }
+    }, [selectedTodo])
 
     return(
         <div className="container">
@@ -493,7 +487,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         onClose={() => setIsEditAlertShowed(false)}
                         sx={{
                             mb : 1, 
-                            backgroundColor: "#81e9ebff",
+                            backgroundColor: SECOND_COLOR,
                             color: "rgba(0,0,0,0.87)",
                             '& .MuiAlert-icon': { color: 'inherit' }
                         }}>
@@ -507,7 +501,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         onClose={() => setIsDeleteAlertShowed(false)}
                         sx={{
                             mb : 1,
-                            backgroundColor: "#ea7c7cff",
+                            backgroundColor: DANGER_COLOR,
                             color: "rgba(0,0,0,0.87)",
                             '& .MuiAlert-icon': { color: 'inherit' }
                         }}>
@@ -584,7 +578,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                                 sx={{
                                     color : "#1e1f24ff",
                                     padding: "6px",
-                                    border : "1px solid #ea7c7cff",
+                                    border : `1px solid ${DANGER_COLOR}`,
                                     borderRadius: "12px",
                                     display: "flex",
                                     alignItems: "center",
@@ -592,8 +586,8 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                                     mx : 2
                                 }}
                                 >
-                                <CloseIcon sx={{ fontSize : "1.7rem", color : "#ea7c7cff" }}/>
-                                <b style={{color : "#ea7c7cff"}}>Undone</b>
+                                <CloseIcon sx={{ fontSize : "1.7rem", color : DANGER_COLOR }}/>
+                                <b style={{color : DANGER_COLOR}}>Undone</b>
                             </Box>
                         }
                     </div>
@@ -727,24 +721,24 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                             <input type="text" 
                             value={selectedTodo?.label} 
                             onChange={(e) => setSelectedTodo({...selectedTodo, label : e.target.value})} 
-                            className={`form-control mt-2 ${errors.label ? 'border-danger' : ''}`} 
+                            className={`form-control mt-2 shadow-none ${errors.label ? 'red-input-border' : 'blue-input-border'}`} 
                             ref={uLabel}/>
 
-                            {errors.label && <div className="text-danger mb-2">{errors.label}</div>}
+                            {errors.label && <div style={{color : DANGER_COLOR}} className="mb-2">{errors.label}</div>}
 
                             Details 
                             <textarea 
                             value={selectedTodo?.details} 
                             onChange={(e) => setSelectedTodo({...selectedTodo, details : e.target.value})} 
-                            className={`form-control mt-2 ${errors.details ? 'border-danger' : ''}`} 
+                            className={`form-control mt-2 shadow-none ${errors.details ? 'red-input-border' : 'blue-input-border'}`} 
                             ref={uDetails}></textarea>
 
-                            {errors.details && <div className="text-danger mb-2">{errors.details}</div>}
+                            {errors.details && <div style={{color : DANGER_COLOR}} className="mb-2">{errors.details}</div>}
 
                             <label className="my-1">Tag</label>
 
                             <select 
-                                className={`form-select mt-1 ${errors['tag'] ? 'border-danger' : ''}`} 
+                                className={`form-select mt-1 shadow-none ${errors['tag'] ? 'red-input-border' : 'blue-input-border'}`} 
                                 ref={uTag} 
                                 value={selectedTodo?.tag} 
                                 onChange={e => setSelectedTodo({...selectedTodo, tag : e.target.value})}>
@@ -753,38 +747,39 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                                 <option value="Work">Work</option>
                                 <option value="Home">Home</option>
                                 <option value="Health">Health</option>
+                                <option value="Sport">Sport</option>
                                 <option value="Shopping">Shopping</option>
                                 <option value="Other">Other...</option>
                             </select>
 
-                            {errors.tag && <div className="text-danger mb-2">{errors.tag}</div>}
+                            {errors.tag && <div style={{color : DANGER_COLOR}} className="mb-2">{errors.tag}</div>}
 
                             Date 
                             <input type="date" 
                             value={selectedTodo?.date} 
                             onChange={(e) => setSelectedTodo({...selectedTodo, date : e.target.value})} 
-                            className={`form-control mt-2 ${errors.date ? 'border-danger' : ''}`} 
+                            className={`form-control mt-2 shadow-none ${errors.date ? 'red-input-border' : 'blue-input-border'}`} 
                             ref={uDate}/>
 
-                            {errors.date && <div className="text-danger mb-2">{errors.date}</div>}
+                            {errors.date && <div style={{color : DANGER_COLOR}} className="mb-2">{errors.date}</div>}
 
                             Time 
                             <input type="time" 
                             value={selectedTodo?.time} 
                             onChange={(e) => setSelectedTodo({...selectedTodo, time : e.target.value})} 
-                            className={`form-control mt-2 ${errors.time ? 'border-danger' : ''}`} 
+                            className={`form-control mt-2 shadow-none ${errors.time ? 'red-input-border' : 'blue-input-border'}`} 
                             ref={uTime}/>
 
-                            {errors.time && <div className="text-danger mb-2">{errors.time}</div>}
+                            {errors.time && <div style={{color : DANGER_COLOR}} className="mb-2">{errors.time}</div>}
 
                             <div className="d-flex align-items-center gap-2 mt-3 ms-auto">
                             <Button 
                                 type="submit" 
                                 variant="outlined" 
                                 sx={{
-                                    borderColor: "#81e9ebff",  
+                                    borderColor: SECOND_COLOR,  
                                     borderRadius : "10px",  
-                                    color: "#81e9ebff",
+                                    color: SECOND_COLOR,
                                 }} 
                                 disabled={!isEditFormValid}
                                 data-bs-dismiss="modal">
