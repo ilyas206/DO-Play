@@ -1,3 +1,1 @@
-- replacing the fixed alerts by floating ones
-- create some visual effects for past dates 
-- changing app font
+- date component from Material UI

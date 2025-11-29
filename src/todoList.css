@@ -28,6 +28,11 @@
   color: #e6eef6; /* soft light text */
 }
 
+.table > tbody > tr.past-done-row > * {
+  background-color: rgba(75, 73, 73, 0.665); 
+  color: #e6eef6; /* soft light text */
+}
+
 /* hover remains subtle */
 .table > tbody > tr.done-row:hover > * {
   filter: brightness(1.05);
@@ -94,14 +99,18 @@ input[type="checkbox"][id^="cbx-"]:checked ~ .cbx {
  animation: jelly 0.6s ease;
 }
 
-input[type="checkbox"][id="cbx-edit"]:checked ~ .cbx {
+input[type="checkbox"][id^="past-cbx-"]:checked ~ .cbx {
  border-color: transparent;
- background: #81e9ebff;
+ background: rgba(132, 126, 126, 0.665);
  animation: jelly 0.6s ease;
 }
 
-
 input[type="checkbox"][id^="cbx-"]:checked ~ .cbx:after {
+ opacity: 1;
+ transform: rotate(45deg) scale(1);
+}
+
+input[type="checkbox"][id^="past-cbx-"]:checked ~ .cbx:after {
  opacity: 1;
  transform: rotate(45deg) scale(1);
 }
@@ -141,3 +150,17 @@ input[type="checkbox"][id^="cbx-"]:checked ~ .cbx:after {
  display: none !important;
 }
 
+/* Hide scrollbar while keeping functionality */
+::-webkit-scrollbar {
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;  
+}
+
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

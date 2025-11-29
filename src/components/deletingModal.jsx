@@ -2,7 +2,19 @@ import { Box, Button } from "@mui/material";
 import { DANGER_COLOR } from "../style";
 import { handleTagColor, handleTagIcon } from "../tags";
 
-export default function DeletingModal({selectedTodo, onConfirmDelete}) {
+export default function DeletingModal({onDeleteTodo, selectedTodo, setSelectedTodo, setIsDeleteAlertShowed}) {
+
+    const handleConfirmDelete = () => {
+        if (selectedTodo) {
+            onDeleteTodo(selectedTodo.id);
+            setSelectedTodo(null);
+            setIsDeleteAlertShowed(true)
+
+            setTimeout(() => {
+                setIsDeleteAlertShowed(false)
+            }, 5000)
+        }
+    };
 
     const viewDeletingTodo = () => {
         const newDate = new Date(selectedTodo.date)
@@ -85,7 +97,7 @@ export default function DeletingModal({selectedTodo, onConfirmDelete}) {
                                 borderRadius : "10px",   
                                 color: DANGER_COLOR,
                             }} 
-                            onClick={onConfirmDelete}
+                            onClick={handleConfirmDelete}
                             data-bs-dismiss="modal">
                             {!selectedTodo?.done ? "Delete anyway" : "Delete"}
                         </Button>
