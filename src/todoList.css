@@ -28,11 +28,6 @@
   color: #e6eef6; /* soft light text */
 }
 
-.table > tbody > tr.past-done-row > * {
-  background-color: rgba(75, 73, 73, 0.665); 
-  color: #e6eef6; /* soft light text */
-}
-
 /* hover remains subtle */
 .table > tbody > tr.done-row:hover > * {
   filter: brightness(1.05);
@@ -55,6 +50,18 @@
  border-radius: 3px;
  transition: background 0.1s ease;
  cursor: pointer;
+ display: block;
+}
+
+.cbx-future {
+ margin-top: 8px;
+ margin-bottom: 9px;
+ position: relative;
+ width: 27px;
+ height: 27px;
+ border: 1px solid #393a3c;
+ border-radius: 3px;
+ transition: background 0.1s ease;
  display: block;
 }
 
@@ -99,22 +106,10 @@ input[type="checkbox"][id^="cbx-"]:checked ~ .cbx {
  animation: jelly 0.6s ease;
 }
 
-input[type="checkbox"][id^="past-cbx-"]:checked ~ .cbx {
- border-color: transparent;
- background: rgba(132, 126, 126, 0.665);
- animation: jelly 0.6s ease;
-}
-
 input[type="checkbox"][id^="cbx-"]:checked ~ .cbx:after {
  opacity: 1;
  transform: rotate(45deg) scale(1);
 }
-
-input[type="checkbox"][id^="past-cbx-"]:checked ~ .cbx:after {
- opacity: 1;
- transform: rotate(45deg) scale(1);
-}
-
 
 @keyframes jelly {
  from {

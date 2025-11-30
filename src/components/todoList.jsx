@@ -3,17 +3,17 @@ import { Modal } from 'bootstrap';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import { Box, IconButton } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import DangerousIcon from '@mui/icons-material/Dangerous';
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from '@mui/icons-material/Clear';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 import "../todoList.css";
 import DeletingModal from "./deletingModal";
-import { DANGER_COLOR, MAIN_COLOR, SECOND_COLOR } from "../style";
+import { DANGER_COLOR, MAIN_COLOR, SECOND_COLOR, WARNING_COLOR } from "../style";
 import { handleTagColor, handleTagIcon } from "../tags";
 import Scroller from "./scroller";
 import AddingModal from "./addingModal";
@@ -23,10 +23,10 @@ import ViewingModal from "./viewingModal";
 export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, onEditTodo, setSearch, setFilter, filter}) {
 
     const [selectedTodo, setSelectedTodo] = useState(null)
-    const [errors, setErrors] = useState({})
     const [isAddAlertShowed, setIsAddAlertShowed] = useState(false)
     const [isEditAlertShowed, setIsEditAlertShowed] = useState(false)
     const [isDeleteAlertShowed, setIsDeleteAlertShowed] = useState(false)
+    const [isProhibAlertShowed, setIsProhibAlertShowed] = useState(false)
     const [currentDate, setCurrentDate] = useState(new Date())
     
     useEffect(() => {
@@ -38,7 +38,6 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     const filterRef = useRef()
 
     const handleAddClick = () => {
-        setErrors({})
         const modal = new Modal(document.getElementById("addModal"))
         modal.show()
     }
@@ -50,7 +49,6 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     };
 
     const handleEditClick = todo => {
-        setErrors({})
         setSelectedTodo(todo)
         const modal = new Modal(document.getElementById("editModal"))
         modal.show()
@@ -60,6 +58,18 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         setSelectedTodo(todo)
         const modal = new Modal(document.getElementById("viewModal"))
         modal.show()
+    }
+
+    const togglingTodo = (id, isPast) => {
+        if(!isPast){
+            setIsProhibAlertShowed(true)
+
+            setTimeout(() => {
+                setIsProhibAlertShowed(false)
+            }, 3000)
+        }else{
+            onToggleTodo(id)
+        }
     }
 
     const displayTodos = () => {
@@ -84,18 +94,8 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             const isPast = scheduled.getTime() < currentDate.getTime()
             const pastClass = isPast ? "text-muted" : "fw-bold"
 
-            let rowStyle
-            let checkBoxId
-            if(todo.done && isPast){
-                rowStyle = "text-center past-done-row"
-                checkBoxId = `past-cbx-${todo.id}`
-            }else if(todo.done && !isPast){
-                rowStyle = "text-center done-row"
-                checkBoxId = `cbx-${todo.id}`
-            }else{
-                rowStyle = "text-center"
-                checkBoxId = `cbx-${todo.id}`
-            }
+            const rowStyle = `text-center ${todo.done && "done-row"}`
+            const checkBoxId = `cbx-${todo.id}`
  
             const deleteIconColor = todo.done ? DANGER_COLOR : "#9e9e9eff"
  
@@ -106,8 +106,8 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     id={checkBoxId}
                     checked={todo.done} 
                     onClick={(e) => e.stopPropagation()}
-                    onChange={(e) => {onToggleTodo(todo.id); e.stopPropagation()}}/>
-                    <label htmlFor={checkBoxId} className="cbx" onClick={(e) => e.stopPropagation()}></label>
+                    onChange={(e) => {togglingTodo(todo.id, isPast); e.stopPropagation()}}/>
+                    <label htmlFor={checkBoxId} className={isPast ? "cbx" : "cbx-future"} onClick={(e) => e.stopPropagation()}></label>
                 </td>
                 <td className={pastClass}>{todo.label}</td>
                 <td className={pastClass}>{day} {month}{currentYear !== year && ` - ${year}`}</td>
@@ -231,7 +231,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                 <Collapse in={isAddAlertShowed}>
                     <Alert
                         variant="filled"
-                        icon={<CheckIcon fontSize="inherit"/>}
+                        icon={<AddIcon fontSize="inherit"/>}
                         onClose={() => setIsAddAlertShowed(false)}
                         sx={{
                             mb : 1,
@@ -239,13 +239,13 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                             color: "rgba(0,0,0,0.87)",      
                             '& .MuiAlert-icon': { color: 'inherit' } 
                         }}>
-                        <b>You added a new Todo successfully</b>
+                        <b>Todo added successfully</b>
                     </Alert>
                 </Collapse>
                 <Collapse in={isEditAlertShowed}>
                     <Alert
                         variant="filled"
-                        icon={<DriveFileRenameOutlineIcon fontSize="inherit"/>}
+                        icon={<EditOutlinedIcon fontSize="inherit"/>}
                         onClose={() => setIsEditAlertShowed(false)}
                         sx={{
                             mb : 1, 
@@ -253,13 +253,13 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                             color: "rgba(0,0,0,0.87)",
                             '& .MuiAlert-icon': { color: 'inherit' }
                         }}>
-                        <b>You edited the selected Todo successfully</b>
+                        <b>Todo updated successfully</b>
                     </Alert>
                 </Collapse>
                 <Collapse in={isDeleteAlertShowed}>
                     <Alert
                         variant="filled"
-                        icon={<DangerousIcon fontSize="inherit"/>}
+                        icon={<ClearIcon fontSize="inherit"/>}
                         onClose={() => setIsDeleteAlertShowed(false)}
                         sx={{
                             mb : 1,
@@ -267,7 +267,21 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                             color: "rgba(0,0,0,0.87)",
                             '& .MuiAlert-icon': { color: 'inherit' }
                         }}>
-                        <b>You deleted the selected Todo permanently</b>
+                        <b>Todo deleted permanently</b>
+                    </Alert>
+                </Collapse>
+                <Collapse in={isProhibAlertShowed}>
+                    <Alert
+                        variant="filled"
+                        icon={<RemoveDoneIcon fontSize="inherit"/>}
+                        onClose={() => setIsProhibAlertShowed(false)}
+                        sx={{
+                            mb : 1,
+                            backgroundColor: WARNING_COLOR,
+                            color: "rgba(0,0,0,0.87)",
+                            '& .MuiAlert-icon': { color: 'inherit' }
+                        }}>
+                        <b>Future Todos cannot be marked as done</b>
                     </Alert>
                 </Collapse>
             </div>
@@ -308,10 +322,10 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             <ViewingModal selectedTodo={selectedTodo}/>
 
             {/* Adding modal */}
-            <AddingModal onAddTodo={onAddTodo} errors={errors} setErrors={setErrors} setIsAddAlertShowed={setIsAddAlertShowed}/>
+            <AddingModal onAddTodo={onAddTodo} setIsAddAlertShowed={setIsAddAlertShowed}/>
 
             {/* Editing modal */}
-            <EditingModal onEditTodo={onEditTodo} errors={errors} setErrors={setErrors} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsEditAlertShowed={setIsEditAlertShowed} />
+            <EditingModal onEditTodo={onEditTodo} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsEditAlertShowed={setIsEditAlertShowed} />
             
             {/* Deleting modal */}
             <DeletingModal onDeleteTodo={onDeleteTodo} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsDeleteAlertShowed={setIsDeleteAlertShowed}/>

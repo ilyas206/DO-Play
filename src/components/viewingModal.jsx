@@ -65,6 +65,10 @@ export default function ViewingModal({selectedTodo}) {
             tabIndex="-1"
             aria-labelledby="viewModalLabel"
             aria-hidden="true"
+            style={{
+                position : 'fixed',
+                top : '140px'
+            }}
         >
             <div className="modal-dialog">
             <div className="modal-content">

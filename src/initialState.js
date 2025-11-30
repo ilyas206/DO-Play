@@ -141,7 +141,7 @@ export const INITIAL_STATE = [
         date: "2025-12-05",
         time: "10:00",
         tag: "Health",
-        done: true
+        done: false
     },
     {
         id: 17,

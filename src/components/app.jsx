@@ -24,6 +24,7 @@ export default function App() {
             case "Home Todos" : return todo.tag === 'Home' ;
             case "Health Todos" : return todo.tag === 'Health' ;
             case "Shopping Todos" : return todo.tag === 'Shopping' ;
+            case "Sport Todos" : return todo.tag === 'Sport' ;
             case "Other Todos" : return todo.tag === 'Other' ;
             default : return true ;
         }

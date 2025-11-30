@@ -3,9 +3,10 @@ import { DANGER_COLOR, MAIN_COLOR } from "../style";
 import { Button } from "@mui/material";
 import { validateForm } from "../validation/validateForm";
 
-export default function AddingModal({onAddTodo, errors, setErrors, setIsAddAlertShowed}) {
+export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
     
     const [currentId, setCurrentId] = useState(21)
+    const [errors, setErrors] = useState({})
     const [isAddFormValid, setIsAddFormValid] = useState(false)
 
     const label = useRef()
@@ -16,7 +17,8 @@ export default function AddingModal({onAddTodo, errors, setErrors, setIsAddAlert
 
     useEffect(() => {
         const modalElement = document.getElementById("addModal")
-        modalElement.addEventListener("show.bs.modal", resetForm)  
+        modalElement.addEventListener("show.bs.modal", resetForm) 
+        if(!modalElement) return 
 
         return () => {
             modalElement.removeEventListener("show.bs.modal", resetForm)
@@ -152,7 +154,7 @@ export default function AddingModal({onAddTodo, errors, setErrors, setIsAddAlert
                             {displayTagSelect()}
                             <label className="my-1">Date</label>
                             {displayOtherInputs('date')}
-                            <label className="my-1">Time</label>
+                            <label className="my-1">Time ( Started at )</label>
                             {displayOtherInputs('time')}
                             <div className="d-flex align-items-center gap-2 mt-3 ms-auto">
                                 <Button 
