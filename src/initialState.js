@@ -6,7 +6,8 @@ export const INITIAL_STATE = [
         date: "2025-11-26",
         time: "16:00",
         tag: "Work",
-        done: true
+        done: true,
+        priority: "High"
     },
     {
         id: 2,
@@ -15,7 +16,8 @@ export const INITIAL_STATE = [
         date: "2025-11-27",
         time: "18:30",
         tag: "Shopping",
-        done: false
+        done: false,
+        priority: "Medium"
     },
     {
         id: 3,
@@ -24,7 +26,8 @@ export const INITIAL_STATE = [
         date: "2025-12-03",
         time: "14:30",
         tag: "Health",
-        done: false
+        done: false,
+        priority: "High"
     },
     {
         id: 4,
@@ -33,7 +36,8 @@ export const INITIAL_STATE = [
         date: "2025-11-28",
         time: "09:00",
         tag: "Work",
-        done: true
+        done: true,
+        priority: "Medium"
     },
     {
         id: 5,
@@ -42,7 +46,8 @@ export const INITIAL_STATE = [
         date: "2025-11-30",
         time: "10:00",
         tag: "Home",
-        done: false
+        done: false,
+        priority: "High"
     },
     {
         id: 6,
@@ -51,7 +56,8 @@ export const INITIAL_STATE = [
         date: "2025-11-29",
         time: "19:30",
         tag: "Personal",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 7,
@@ -60,7 +66,8 @@ export const INITIAL_STATE = [
         date: "2025-12-10",
         time: "11:15",
         tag: "Home",
-        done: false
+        done: false,
+        priority: "Medium"
     },
     {
         id: 8,
@@ -69,7 +76,8 @@ export const INITIAL_STATE = [
         date: "2025-11-30",
         time: "21:00",
         tag: "Personal",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 9,
@@ -78,7 +86,8 @@ export const INITIAL_STATE = [
         date: "2025-12-12",
         time: "15:45",
         tag: "Other",
-        done: false
+        done: false,
+        priority: "Medium"
     },
     {
         id: 10,
@@ -87,7 +96,8 @@ export const INITIAL_STATE = [
         date: "2025-11-26",
         time: "07:00",
         tag: "Health",
-        done: true
+        done: true,
+        priority: "Medium"
     },
     {
         id: 11,
@@ -96,7 +106,8 @@ export const INITIAL_STATE = [
         date: "2025-12-02",
         time: "12:30",
         tag: "Personal",
-        done: false
+        done: false,
+        priority: "High"
     },
     {
         id: 12,
@@ -105,7 +116,8 @@ export const INITIAL_STATE = [
         date: "2025-11-27",
         time: "17:30",
         tag: "Home",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 13,
@@ -114,7 +126,8 @@ export const INITIAL_STATE = [
         date: "2025-11-29",
         time: "09:45",
         tag: "Home",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 14,
@@ -123,7 +136,8 @@ export const INITIAL_STATE = [
         date: "2025-12-01",
         time: "14:00",
         tag: "Work",
-        done: false
+        done: false,
+        priority: "High"
     },
     {
         id: 15,
@@ -132,7 +146,8 @@ export const INITIAL_STATE = [
         date: "2025-11-26",
         time: "08:15",
         tag: "Health",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 16,
@@ -141,7 +156,8 @@ export const INITIAL_STATE = [
         date: "2025-12-05",
         time: "10:00",
         tag: "Health",
-        done: false
+        done: false,
+        priority: "Medium"
     },
     {
         id: 17,
@@ -150,7 +166,8 @@ export const INITIAL_STATE = [
         date: "2025-12-08",
         time: "20:00",
         tag: "Personal",
-        done: false
+        done: false,
+        priority: "Low"
     },
     {
         id: 18,
@@ -159,7 +176,8 @@ export const INITIAL_STATE = [
         date: "2025-11-26",
         time: "18:45",
         tag: "Home",
-        done: true
+        done: true,
+        priority: "Medium"
     },
     {
         id: 19,
@@ -168,7 +186,8 @@ export const INITIAL_STATE = [
         date: "2025-12-06",
         time: "11:00",
         tag: "Other",
-        done: false
+        done: false,
+        priority: "High"
     },
     {
         id: 20,
@@ -177,6 +196,7 @@ export const INITIAL_STATE = [
         date: "2025-12-09",
         time: "13:30",
         tag: "Work",
-        done: false
+        done: false,
+        priority: "High"
     }
-]
+];

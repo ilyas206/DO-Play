@@ -43,6 +43,7 @@ export default function App() {
                     label : newTodo.label,
                     details : newTodo.details,
                     tag : newTodo.tag,
+                    priority : newTodo.priority,
                     date : newTodo.date,
                     time : newTodo.time,
                     done : false

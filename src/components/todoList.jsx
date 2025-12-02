@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Modal } from 'bootstrap';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,6 +11,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import "../todoList.css";
 import DeletingModal from "./deletingModal";
 import { DANGER_COLOR, MAIN_COLOR, SECOND_COLOR, WARNING_COLOR } from "../style";
@@ -19,6 +20,7 @@ import Scroller from "./scroller";
 import AddingModal from "./addingModal";
 import EditingModal from "./editingModal";
 import ViewingModal from "./viewingModal";
+import { handlePriorityColor } from "../priorities";
 
 export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, onEditTodo, setSearch, setFilter, filter}) {
 
@@ -27,12 +29,33 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
     const [isEditAlertShowed, setIsEditAlertShowed] = useState(false)
     const [isDeleteAlertShowed, setIsDeleteAlertShowed] = useState(false)
     const [isProhibAlertShowed, setIsProhibAlertShowed] = useState(false)
+    const [theme, setTheme] = useState("dark")
     const [currentDate, setCurrentDate] = useState(new Date())
     
     useEffect(() => {
-        const id = setInterval(() => setCurrentDate(new Date()), 60000)
-        return () => clearInterval(id)
-    }, [])
+        const update = () => setCurrentDate(new Date());
+
+        update();
+
+        const now = new Date();
+        const delay =
+            (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+        const timeoutId = setTimeout(() => {
+            update(); 
+
+            const intervalId = setInterval(update, 60000);
+
+            return () => clearInterval(intervalId);
+
+        }, delay);
+
+        return () => clearTimeout(timeoutId);
+        }, [])
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-bs-theme", theme)
+    }, [theme])
 
     const searchRef = useRef()
     const filterRef = useRef()
@@ -72,6 +95,16 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         }
     }
 
+    const handleCheckboxOpacity = isPast => {
+        if(theme === "dark"){
+            if(isPast) return "cbx-light cursor"
+            else return "cbx-dark" 
+        }else{
+            if(isPast) return "cbx-dark cursor"
+            else return "cbx-light"
+        }
+    }
+
     const displayTodos = () => {
         const currentYear = new Date().getFullYear().toString()
 
@@ -92,48 +125,66 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
 
             // compare scheduled datetime to now (strictly in the past)
             const isPast = scheduled.getTime() < currentDate.getTime()
-            const pastClass = isPast ? "text-muted" : "fw-bold"
+            const rowClass = `text-center align-middle ${theme === "dark" ? "dark-mode" : "light-mode"}`
+            const columnClass = isPast ? "text-muted" : "fw-bold"
+            const labelClass = isPast && "text-muted fw-light" 
 
-            const rowStyle = `text-center ${todo.done && "done-row"}`
             const checkBoxId = `cbx-${todo.id}`
  
             const deleteIconColor = todo.done ? DANGER_COLOR : "#9e9e9eff"
  
-            return <tr key={todo.id} onClick={() => handleViewClick(todo)} className={rowStyle}>
-                <td className="d-flex align-items-center justify-content-center">
-                    <input type="checkbox" 
-                    className="hidden-xs-up"
-                    id={checkBoxId}
-                    checked={todo.done} 
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) => {togglingTodo(todo.id, isPast); e.stopPropagation()}}/>
-                    <label htmlFor={checkBoxId} className={isPast ? "cbx" : "cbx-future"} onClick={(e) => e.stopPropagation()}></label>
+            return <tr key={todo.id} onClick={() => handleViewClick(todo)} className={rowClass}>
+                <td className="align-middle text-center">
+                    <div className="d-inline-flex align-items-center justify-content-center">
+                        <input type="checkbox" 
+                        className="hidden-xs-up"
+                        id={checkBoxId}
+                        checked={todo.done} 
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {togglingTodo(todo.id, isPast); e.stopPropagation()}}/>
+                        <label htmlFor={checkBoxId} className={handleCheckboxOpacity(isPast)} onClick={(e) => e.stopPropagation()}></label>
+                    </div>
                 </td>
-                <td className={pastClass}>{todo.label}</td>
-                <td className={pastClass}>{day} {month}{currentYear !== year && ` - ${year}`}</td>
-                <td className={pastClass}>{hStr} <b>:</b> {mStr}</td>
-                <td>
+                <td><h5 className={labelClass}>{todo.label}</h5></td>
+                <td className={columnClass}>
+                    <span style={{color : handlePriorityColor(todo.priority)}}>
+                        <FiberManualRecordIcon fontSize="low" sx={{marginBottom : "3px", marginRight : "2px"}}/> 
+                        {todo.priority}
+                    </span>
+                </td>
+                <td className={columnClass}>{day} {month}{currentYear !== year && ` - ${year}`}</td>
+                <td className={columnClass}>{hStr} <b>:</b> {mStr}</td>
+                <td className="align-middle">
                     <Box
                         sx={{
                             backgroundColor: handleTagColor(todo.tag),
-                            color : "#1e1f24ff",
-                            padding: "6px",
-                            borderRadius: "12px",
+                            color : "#ffffffff",
+                            height : "35px",
+                            width : "35px",
+                            p : "10px",
+                            m : "0 auto",
+                            borderRadius: "50%",
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            boxShadow : `0 0 13px 3px ${handleTagColor(todo.tag)}`
                         }}
                         >
                         {handleTagIcon(todo.tag)}
                     </Box>
                 </td>
-                <td className="d-flex justify-content-center align-items-center gap-2">
-                    <IconButton sx={{color : SECOND_COLOR, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleEditClick(todo); e.stopPropagation()}} aria-label="Edit">
-                        <EditIcon />
-                    </IconButton>
-                    <IconButton sx={{color : deleteIconColor, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleDeleteClick(todo); e.stopPropagation()}} aria-label="Delete">
-                        <DeleteIcon />
-                    </IconButton>
+                <td className="align-middle">
+                    <Tooltip title="Edit" arrow>
+                        <IconButton sx={{color : SECOND_COLOR, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleEditClick(todo); e.stopPropagation()}} aria-label="Edit">
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete" arrow>
+                        <IconButton sx={{color : deleteIconColor, marginTop : "3px", marginBottom : "1px"}} onClick={(e) => {handleDeleteClick(todo); e.stopPropagation()}} aria-label="Delete">
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                    
                 </td>   
             </tr>
         })
@@ -149,7 +200,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         const minutes = String(currentDate.getMinutes()).padStart(2, '0')
 
         return(
-            <div className="card p-3 shadow" style={{backgroundColor : "#31363bff"}}>
+            <div className="card p-3 shadow" style={{backgroundColor : theme === "dark" ? "#31363bff" : "#dff2e0ff"}}>
                 <div className="d-flex align-items-center justify-content-between">
                     <h4 className="fw-light">{currentWeekDay} {currentDay} {currentMonth} {currentYear}</h4>
                     <h4 className="fw-light display-6">{hours} : {minutes}</h4>
@@ -206,13 +257,17 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             </div>
 
             <div className="col-2 d-flex align-items-center gap-2 justify-content-center w-auto">
-                <IconButton sx={{ color: MAIN_COLOR }} onClick={handleSearch}>
-                <SearchIcon />
-                </IconButton>
+               <Tooltip title="Search" arrow>
+                    <IconButton sx={{ color: MAIN_COLOR }} onClick={handleSearch}>
+                        <SearchIcon />
+                    </IconButton>
+               </Tooltip>
 
-                <IconButton sx={{ color: "#9e9e9eff" }} onClick={handleReset}>
-                <RestartAltIcon />
-                </IconButton>
+                <Tooltip title="Clear" arrow>
+                    <IconButton sx={{ color: "#9e9e9eff" }} onClick={handleReset}>
+                        <RestartAltIcon />
+                    </IconButton>
+                </Tooltip>
             </div>
 
             <div className="col-auto d-flex align-items-center">
@@ -220,7 +275,6 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     <h3 className="fw-light mb-0">{todos.length} Todo(s)</h3>
                 </div>
             </div>
-
         )
     }
 
@@ -288,9 +342,21 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             {displayCurrentDate()}
             <div className="d-flex align-items-center justify-content-between mt-3">
                 <h2 className="display-5"><span style={{color : MAIN_COLOR}}>TODO</span>Play</h2>
-                <IconButton sx={{color : MAIN_COLOR}} onClick={handleAddClick} aria-label="Add">
-                    <AddIcon fontSize="large" />
-                </IconButton>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                    <Tooltip title="Add" arrow>
+                        <IconButton sx={{color : MAIN_COLOR}} onClick={handleAddClick} aria-label="Add">
+                            <AddIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Theme" arrow>
+                        <div className="toggle-switch" >
+                            <label className="switch-label" onClick={(e) => e.stopPropagation()}>
+                                <input type="checkbox" className="checkbox" onChange={() => setTheme(theme === "dark" ? "light" : "dark")}/>
+                                <span className="slider"></span>
+                            </label>
+                        </div> 
+                    </Tooltip>
+                </div> 
             </div>
             <hr/>
             {displaySearchBar()}
@@ -299,6 +365,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     <tr className="text-center">
                         <th>Status</th>
                         <th>Label</th>
+                        <th>Priority</th>
                         <th>Date</th>
                         <th>Time</th>
                         <th>Tag</th>
@@ -310,8 +377,8 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         todos.length > 0 ? 
                         displayTodos() :
                         <tr>
-                            <td colSpan={6} align="center">
-                                {filter === "Only done" ? "No done Todos yet" : "Your schedule is free"}
+                            <td colSpan={7} align="center">
+                                {filter === "Only done" || filter === "Only undone" ? `No ${filter} Todos` : `You have no ${filter}`}
                             </td>
                         </tr>
                     }
@@ -325,7 +392,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             <AddingModal onAddTodo={onAddTodo} setIsAddAlertShowed={setIsAddAlertShowed}/>
 
             {/* Editing modal */}
-            <EditingModal onEditTodo={onEditTodo} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsEditAlertShowed={setIsEditAlertShowed} />
+            <EditingModal onEditTodo={onEditTodo} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsEditAlertShowed={setIsEditAlertShowed}/>
             
             {/* Deleting modal */}
             <DeletingModal onDeleteTodo={onDeleteTodo} selectedTodo={selectedTodo} setSelectedTodo={setSelectedTodo} setIsDeleteAlertShowed={setIsDeleteAlertShowed}/>

@@ -1,9 +1,10 @@
-export const validateForm = (label, details, date, time, tag, setErrors) => {
+export const validateForm = (label, details, date, time, tag, priority, setErrors) => {
     setErrors({})
     
     const labelValue = label.current.value
     const detailsValue = details.current.value
     const tagValue = tag.current.value
+    const priorityValue = priority.current.value
     const dateValue = date.current.value
     const timeValue = time.current.value
 
@@ -64,6 +65,18 @@ export const validateForm = (label, details, date, time, tag, setErrors) => {
             return {
                 ...prevState,
                 ...{tag : "A tag should be selected"}
+            }
+        })
+        isFormValid = false
+    }
+
+    // Priority validation 
+
+    if(priorityValue === ''){
+        setErrors(prevState => {
+            return {
+                ...prevState,
+                ...{priority : "A priority should be selected"}
             }
         })
         isFormValid = false

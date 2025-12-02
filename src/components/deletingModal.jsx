@@ -1,6 +1,7 @@
 import { Box, Button } from "@mui/material";
 import { DANGER_COLOR } from "../style";
 import { handleTagColor, handleTagIcon } from "../tags";
+import { handlePriorityColor } from "../priorities";
 
 export default function DeletingModal({onDeleteTodo, selectedTodo, setSelectedTodo, setIsDeleteAlertShowed}) {
 
@@ -31,12 +32,12 @@ export default function DeletingModal({onDeleteTodo, selectedTodo, setSelectedTo
                     <p><span className="display-6">{day} {month}</span> {year}</p>
                 </div>
                 <hr />
-                <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-center gap-2">
                     <h3 className="fw-light display-6">{selectedTodo.label}</h3>
                     <Box
                         sx={{
                             color : handleTagColor(selectedTodo.tag),
-                            padding : "6px 8px",
+                            padding : "8px 8px",
                             border : `1px solid ${handleTagColor(selectedTodo.tag)}`,
                             borderRadius: "8px",
                             display: "flex",
@@ -44,14 +45,25 @@ export default function DeletingModal({onDeleteTodo, selectedTodo, setSelectedTo
                             justifyContent: "center",
                             width : "fit-content",
                             '& svg' : {
-                                fontSize : '17px'
+                                fontSize : '20px'
                             }
                         }}
                         >
                         {handleTagIcon(selectedTodo.tag)}
                     </Box>
+
+                    <Box
+                        sx={{
+                            color : handlePriorityColor(selectedTodo?.priority),
+                            padding : "6px",
+                            border : `1px solid ${handlePriorityColor(selectedTodo?.priority)}`,
+                            borderRadius: "8px"
+                        }}
+                        >
+                        <b>{selectedTodo?.priority}</b>
+                    </Box>
                 </div>
-                <p className="fw-light text-muted">{selectedTodo.details}</p>
+                <p className="text-muted">{selectedTodo.details}</p>
             </div> 
         }return <div className="modal-body">
                 <p className="fw-10">No Todo selected</p>

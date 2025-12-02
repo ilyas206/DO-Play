@@ -10,22 +10,22 @@ export const handleTagColor = tag => {
     switch(tag) {
         case 'Personal' : return "#A3568A"
         case 'Work' : return "#3D6FA8"
-        case 'Home' : return "#C27A52"
+        case 'Home' : return "#c29352ff"
         case 'Health' : return "#3F9B67"
-        case 'Sport' : return "#C74343"
-        case 'Shopping' : return "#C0A243"
+        case 'Sport' : return "#4347c7ff"
+        case 'Shopping' : return "#adc043ff"
         default : return "#757D79"
     }
 }
 
 export const handleTagIcon = tag => {
     switch(tag) {
-        case 'Personal' : return <PersonIcon/>
-        case 'Work' : return <WorkIcon/>
-        case 'Home' : return <HomeIcon/>
-        case 'Health' : return <HealthAndSafetyIcon/>
-        case 'Sport' : return <FitnessCenterIcon/>
-        case 'Other' : return <MoreHorizIcon/>
-        default : return <ShoppingCartIcon/>
+        case 'Personal' : return <PersonIcon fontSize='small'/>
+        case 'Work' : return <WorkIcon fontSize='small'/>
+        case 'Home' : return <HomeIcon fontSize='small'/>
+        case 'Health' : return <HealthAndSafetyIcon fontSize='small'/>
+        case 'Sport' : return <FitnessCenterIcon fontSize='small'/>
+        case 'Other' : return <MoreHorizIcon fontSize='small'/>
+        default : return <ShoppingCartIcon fontSize='small'/>
     }
 }

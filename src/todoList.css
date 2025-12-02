@@ -4,43 +4,35 @@
   -webkit-transition: background-color .32s ease-in-out, color .32s ease-in-out, border-top-color .32s ease-in-out;
 }
 
-.table > tbody > tr input, .done {
+/* .table > tbody > tr input, .done {
   cursor: pointer;
-}
+} */
 
 .table > tbody > tr {
   transition: all .5s;
 }
 
-.table > tbody > tr:hover {
+.table > tbody > tr.dark-mode:hover {
   background-color: rgb(45, 45, 52);
 }
 
+.table > tbody > tr.light-mode:hover {
+  background-color: rgb(217, 217, 220);
+}
+
 /* default non-done rows keep transparent background so transition can animate from/to */
-.table > tbody > tr:not(.done-row) > * {
+.table > tbody > tr > * {
   background-color: transparent;
   color: inherit;
 }
 
-/* done row style (target cells) */
-.table > tbody > tr.done-row > * {
-  background-color: rgba(74, 95, 79, 0.9); 
-  color: #e6eef6; /* soft light text */
-}
-
 /* hover remains subtle */
-.table > tbody > tr.done-row:hover > * {
+.table > tbody > tr:hover {
   filter: brightness(1.05);
 }
 
-/* ensure borders and td text inherit */
-.table > tbody > tr.done-row td {
-  border-top-color: rgba(172, 32, 32, 0.04);
-  color: inherit;
-}
-
 /* From Uiverse.io by cssbuttons-io */ 
-.cbx {
+.cbx-light {
  margin-top: 8px;
  margin-bottom: 9px;
  position: relative;
@@ -49,11 +41,10 @@
  border: 1px solid #c8ccd4;
  border-radius: 3px;
  transition: background 0.1s ease;
- cursor: pointer;
  display: block;
 }
 
-.cbx-future {
+.cbx-dark {
  margin-top: 8px;
  margin-bottom: 9px;
  position: relative;
@@ -65,7 +56,7 @@
  display: block;
 }
 
-span.badge {
+.cursor {
   cursor: pointer;
 }
 
@@ -81,11 +72,7 @@ span.badge {
   border: 1px solid #ea7c7cff !important;
 }
 
-.form-select option:hover{
-  background-color: #81eb8a !important;
-}
-
-.cbx:after {
+.cbx-dark:after {
  content: '';
  position: absolute;
  top: 4px;
@@ -100,13 +87,39 @@ span.badge {
  transition-delay: 0.15s;
 }
 
-input[type="checkbox"][id^="cbx-"]:checked ~ .cbx {
+.cbx-light:after {
+ content: '';
+ position: absolute;
+ top: 4px;
+ left: 9px;
+ width: 7px;
+ height: 14px;
+ opacity: 0;
+ transform: rotate(45deg) scale(0);
+ border-right: 2px solid #fff;
+ border-bottom: 2px solid #fff;
+ transition: all 0.3s ease;
+ transition-delay: 0.15s;
+}
+
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx-light {
  border-color: transparent;
  background: #36a940;
  animation: jelly 0.6s ease;
 }
 
-input[type="checkbox"][id^="cbx-"]:checked ~ .cbx:after {
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx-dark {
+ border-color: transparent;
+ background: #36a940;
+ animation: jelly 0.6s ease;
+}
+
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx-light:after {
+ opacity: 1;
+ transform: rotate(45deg) scale(1);
+}
+
+input[type="checkbox"][id^="cbx-"]:checked ~ .cbx-dark:after {
  opacity: 1;
  transform: rotate(45deg) scale(1);
 }
@@ -158,4 +171,61 @@ html {
 body {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 65px;     /* was 100 */
+  height: 32px;    /* was 50 */
+  --light: #f7f6f6;
+  --dark: #404145;
+  --medium : #81eb8a;
+  --link: rgb(27, 129, 112);
+  --link-hover: rgb(24, 94, 82);
+}
+
+.switch-label {
+  position: absolute;
+  width: 100%;
+  height: 32px;
+  background-color: var(--dark);
+  border-radius: 16px;
+  cursor: pointer;
+  border: 2px solid var(--medium); 
+}
+
+.checkbox {
+  position: absolute;
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  transition: 0.3s;
+}
+
+.checkbox:checked ~ .slider {
+  background-color: var(--light);
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 8px -3px 0px 0px var(--medium);
+  background-color: var(--dark);
+  transition: 0.3s;
+}
+
+.checkbox:checked ~ .slider::before {
+  transform: translateX(33px); /* tuned for 65px width */
+  background-color: var(--medium);
+  box-shadow: none;
 }

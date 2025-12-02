@@ -21,6 +21,7 @@ export default function EditingModal({onEditTodo, selectedTodo, setSelectedTodo,
     const uLabel = useRef()
     const uDetails = useRef()
     const uTag = useRef()
+    const uPriority = useRef()
     const uDate = useRef()
     const uTime = useRef()
 
@@ -73,6 +74,25 @@ export default function EditingModal({onEditTodo, selectedTodo, setSelectedTodo,
         </>
     }
 
+    const displayPrioritySelect = () => {
+        return(
+            <>
+                <select 
+                    className={`form-select shadow-none ${errors['priority'] ? 'red-input-border' : 'green-input-border'}`} 
+                    ref={uPriority}
+                    value={selectedTodo?.priority} 
+                    onChange={e => setSelectedTodo({...selectedTodo, priority : e.target.value})}>
+                    <option value="">Select a Priority</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+
+                {errors['priority'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['priority']}</div>}
+            </>
+        )
+    }
+
     const displayDateInput = () => {
         return <>
             <input type="date" 
@@ -111,13 +131,13 @@ export default function EditingModal({onEditTodo, selectedTodo, setSelectedTodo,
     }
 
     const handleEditChange = () => {
-        const isValid = validateForm(uLabel, uDetails, uDate, uTime, uTag, setErrors)
+        const isValid = validateForm(uLabel, uDetails, uDate, uTime, uTag, uPriority, setErrors)
         setIsEditFormValid(isValid)
     }
 
     const handleConfirmEdit = e => {
         e.preventDefault()
-        const isValid = validateForm(uLabel, uDetails, uDate, uTime, uTag, setErrors)
+        const isValid = validateForm(uLabel, uDetails, uDate, uTime, uTag, uPriority, setErrors)
         setIsEditFormValid(isValid)
 
         if(selectedTodo && isValid) {
@@ -130,6 +150,7 @@ export default function EditingModal({onEditTodo, selectedTodo, setSelectedTodo,
                 details : uDetails.current.value,
                 done : willBeDone,
                 tag : uTag.current.value,
+                priority : uPriority.current.value,
                 date : uDate.current.value,
                 time : uTime.current.value
             })
@@ -174,7 +195,9 @@ export default function EditingModal({onEditTodo, selectedTodo, setSelectedTodo,
                             <label className="my-1">Details</label> 
                             {displayTextAreaInput()}
                             <label className="my-1">Tag</label>
-                            {displayTagSelect()}       
+                            {displayTagSelect()} 
+                            <label className="my-1">Priority</label>   
+                            {displayPrioritySelect()}   
                             <label className="my-1">Date</label> 
                             {displayDateInput()}
                             <label className="my-1">Time ( Started at )</label>

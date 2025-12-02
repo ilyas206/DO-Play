@@ -3,7 +3,7 @@ import { DANGER_COLOR, MAIN_COLOR } from "../style";
 import { Button } from "@mui/material";
 import { validateForm } from "../validation/validateForm";
 
-export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
+export default function AddingModal({onAddTodo, setIsAddAlertShowed, theme}) {
     
     const [currentId, setCurrentId] = useState(21)
     const [errors, setErrors] = useState({})
@@ -12,6 +12,7 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
     const label = useRef()
     const details = useRef()
     const tag = useRef()
+    const priority = useRef()
     const date = useRef()
     const time = useRef()
 
@@ -54,7 +55,7 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
     const displayTagSelect = () => {
         return(
             <>
-                <select className={`form-select mt-1 shadow-none ${errors['tag'] ? 'red-input-border' : 'green-input-border'}`} ref={tag}>
+                <select className={`form-select shadow-none ${errors['tag'] ? 'red-input-border' : 'green-input-border'}`} ref={tag}>
                     <option value="">Select a Tag</option>
                     <option value="Personal">Personal</option>
                     <option value="Work">Work</option>
@@ -66,6 +67,21 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
                 </select>
 
                 {errors['tag'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['tag']}</div>}
+            </>
+        )
+    }
+
+    const displayPrioritySelect = () => {
+        return(
+            <>
+                <select className={`form-select shadow-none ${errors['priority'] ? 'red-input-border' : 'green-input-border'}`} ref={priority}>
+                    <option value="">Select a Priority</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+
+                {errors['priority'] && <div style={{color : DANGER_COLOR}} className="mb-2">{errors['priority']}</div>}
             </>
         )
     }
@@ -88,18 +104,19 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
         details.current.value = ''
         date.current.value = ''
         tag.current.value = ''
+        priority.current.value = ''
         time.current.value = ''
         setErrors({})
     }
 
     const handleAddChange = () => {
-        const isValid = validateForm(label, details, date, time, tag, setErrors)
+        const isValid = validateForm(label, details, date, time, tag, priority, setErrors)
         setIsAddFormValid(isValid)
     }
 
     const handleConfirmAdd = e => {
         e.preventDefault()
-        const isValid = validateForm(label, details, date, time, tag, setErrors)
+        const isValid = validateForm(label, details, date, time, tag, priority, setErrors)
         setIsAddFormValid(isValid)
 
         if(isValid){
@@ -110,6 +127,7 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
                 label : label.current.value,
                 details : details.current.value,
                 tag : tag.current.value,
+                priority : priority.current.value,
                 date : date.current.value,
                 time : time.current.value
             })
@@ -152,6 +170,8 @@ export default function AddingModal({onAddTodo, setIsAddAlertShowed}) {
                             {displayTextAreaInput()}
                             <label className="my-1">Tag</label>
                             {displayTagSelect()}
+                            <label className="my-1">Priority</label>
+                            {displayPrioritySelect()}
                             <label className="my-1">Date</label>
                             {displayOtherInputs('date')}
                             <label className="my-1">Time ( Started at )</label>

@@ -1,9 +1,10 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import { DANGER_COLOR, MAIN_COLOR } from "../style";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCallback } from "react";
 import { handleTagColor, handleTagIcon } from "../tags";
+import { handlePriorityColor } from "../priorities";
 
 export default function ViewingModal({selectedTodo}) {
 
@@ -53,7 +54,7 @@ export default function ViewingModal({selectedTodo}) {
                     </Box>
                 </div>
                 
-            <p className="fw-light text-muted">{selectedTodo.details}</p>
+            <p className="text-muted">{selectedTodo.details}</p>
         </div>)
     }, [selectedTodo])
 
@@ -65,10 +66,6 @@ export default function ViewingModal({selectedTodo}) {
             tabIndex="-1"
             aria-labelledby="viewModalLabel"
             aria-hidden="true"
-            style={{
-                position : 'fixed',
-                top : '140px'
-            }}
         >
             <div className="modal-dialog">
             <div className="modal-content">
@@ -77,6 +74,19 @@ export default function ViewingModal({selectedTodo}) {
                     <h5 className="modal-title" id="viewModalLabel">
                     View Todo
                     </h5>
+                    <div className="d-flex align-items-center">
+                    <Tooltip title="Priority" arrow>
+                        <Box
+                            sx={{
+                                color : handlePriorityColor(selectedTodo?.priority),
+                                padding : "6px",
+                                border : `1px solid ${handlePriorityColor(selectedTodo?.priority)}`,
+                                borderRadius: "8px"
+                            }}
+                            >
+                            <b>{selectedTodo?.priority}</b>
+                        </Box>
+                    </Tooltip>
                     {
                         selectedTodo?.done 
                         ? <Box
@@ -84,14 +94,14 @@ export default function ViewingModal({selectedTodo}) {
                                 color : "#1e1f24ff",
                                 padding: "6px",
                                 border : `1px solid ${MAIN_COLOR}`,
-                                borderRadius: "12px",
+                                borderRadius: "8px",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                mx : 2
+                                mx : 1
                             }}
                             >
-                            <CheckIcon sx={{ fontSize : "1.7rem", color : MAIN_COLOR }}/>
+                            <CheckIcon sx={{ fontSize : "1.3rem", color : MAIN_COLOR }}/>
                             <b style={{color : MAIN_COLOR}}>Done</b>
                         </Box>
                         : <Box
@@ -99,17 +109,18 @@ export default function ViewingModal({selectedTodo}) {
                                 color : "#1e1f24ff",
                                 padding: "6px",
                                 border : `1px solid ${DANGER_COLOR}`,
-                                borderRadius: "12px",
+                                borderRadius: "8px",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                mx : 2
+                                mx : 1
                             }}
                             >
-                            <CloseIcon sx={{ fontSize : "1.7rem", color : DANGER_COLOR }}/>
+                            <CloseIcon sx={{ fontSize : "1.3rem", color : DANGER_COLOR }}/>
                             <b style={{color : DANGER_COLOR}}>Undone</b>
                         </Box>
                     }
+                    </div>
                 </div>
                 <button
                     type="button"
