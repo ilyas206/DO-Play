@@ -341,7 +341,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             </div>
             {displayCurrentDate()}
             <div className="d-flex align-items-center justify-content-between mt-3">
-                <h2 className="display-5"><span style={{color : MAIN_COLOR}}>TODO</span>Play</h2>
+                <h2 className="display-5"><span style={{color : MAIN_COLOR}}>DO</span>Play</h2>
                 <div className="d-flex align-items-center justify-content-center gap-2">
                     <Tooltip title="Add" arrow>
                         <IconButton sx={{color : MAIN_COLOR}} onClick={handleAddClick} aria-label="Add">
