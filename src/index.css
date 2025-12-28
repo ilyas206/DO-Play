@@ -173,10 +173,12 @@ body {
     scrollbar-width: none;
 }
 
+
+
 .toggle-switch {
   position: relative;
-  width: 65px;     /* was 100 */
-  height: 32px;    /* was 50 */
+  width: 62px;     /* was 100 */
+  height: 27px;    /* was 50 */
   --light: #f7f6f6;
   --dark: #404145;
   --medium : #81eb8a;
@@ -187,7 +189,7 @@ body {
 .switch-label {
   position: absolute;
   width: 100%;
-  height: 32px;
+  height: 27px;
   background-color: var(--dark);
   border-radius: 16px;
   cursor: pointer;
@@ -214,7 +216,7 @@ body {
 .slider::before {
   content: "";
   position: absolute;
-  top: 6px;
+  top: 4px;
   left: 6px;
   width: 16px;
   height: 16px;
@@ -228,4 +230,27 @@ body {
   transform: translateX(33px); /* tuned for 65px width */
   background-color: var(--medium);
   box-shadow: none;
+}
+
+
+/* Make table responsive */
+.table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.alert-container {
+    position: fixed;
+    bottom: 30px;
+    left: 10px;
+    right: 10px;
+    z-index: 1050;
+}
+
+@media (min-width: 768px) {
+    .alert-container {
+        left: auto;
+        right: 10px;
+        max-width: 25%;
+    }
 }

@@ -12,7 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import "../todoList.css";
+import "../index.css";
 import DeletingModal from "./deletingModal";
 import { DANGER_COLOR, MAIN_COLOR, SECOND_COLOR, WARNING_COLOR } from "../style";
 import { handleTagColor, handleTagIcon } from "../tags";
@@ -126,15 +126,16 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
             // compare scheduled datetime to now (strictly in the past)
             const isPast = scheduled.getTime() < currentDate.getTime()
             const rowClass = `text-center align-middle ${theme === "dark" ? "dark-mode" : "light-mode"}`
-            const columnClass = isPast ? "text-muted" : "fw-bold"
-            const labelClass = isPast && "text-muted fw-light" 
+            const columnClass = isPast ? "text-muted d-none d-md-table-cell" : "fw-bold d-none d-md-table-cell"
+            const priorityClass = isPast ? "text-muted" : "fw-bold"
+            const labelClass = `fs-5 ${isPast && "text-muted fw-light"}`
 
             const checkBoxId = `cbx-${todo.id}`
  
             const deleteIconColor = todo.done ? DANGER_COLOR : "#9e9e9eff"
  
             return <tr key={todo.id} onClick={() => handleViewClick(todo)} className={rowClass}>
-                <td className="align-middle text-center">
+                <td>
                     <div className="d-inline-flex align-items-center justify-content-center">
                         <input type="checkbox" 
                         className="hidden-xs-up"
@@ -146,7 +147,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                     </div>
                 </td>
                 <td><h5 className={labelClass}>{todo.label}</h5></td>
-                <td className={columnClass}>
+                <td className={priorityClass}>
                     <span style={{color : handlePriorityColor(todo.priority)}}>
                         <FiberManualRecordIcon fontSize="low" sx={{marginBottom : "3px", marginRight : "2px"}}/> 
                         {todo.priority}
@@ -154,7 +155,7 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                 </td>
                 <td className={columnClass}>{day} {month}{currentYear !== year && ` - ${year}`}</td>
                 <td className={columnClass}>{hStr} <b>:</b> {mStr}</td>
-                <td className="align-middle">
+                <td className="align-middle d-none d-md-table-cell">
                     <Box
                         sx={{
                             backgroundColor: handleTagColor(todo.tag),
@@ -200,11 +201,9 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         const minutes = String(currentDate.getMinutes()).padStart(2, '0')
 
         return(
-            <div className="card p-3 shadow" style={{backgroundColor : theme === "dark" ? "#31363bff" : "#dff2e0ff"}}>
-                <div className="d-flex align-items-center justify-content-between">
-                    <h4 className="fw-light">{currentWeekDay} {currentDay} {currentMonth} {currentYear}</h4>
-                    <h4 className="fw-light display-6">{hours} : {minutes}</h4>
-                </div>
+            <div className="card d-flex flex-column flex-md-row align-items-center justify-content-md-between gap-3 gap-md-0 p-3 shadow" style={{backgroundColor : theme === "dark" ? "#31363bff" : "#dff2e0ff"}}>
+                <h4 className="fw-light text-center text-md-start">{currentWeekDay} {currentDay} {currentMonth} {currentYear}</h4>
+                <h4 className="fw-light display-6">{hours} : {minutes}</h4>
             </div>
         )
     }
@@ -228,18 +227,19 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
         }
 
         return(
-            <div className="row align-items-center my-3 w-100 g-2">
-
-            <div className="col-6">
+        <div className="row align-items-center my-3 w-100 g-2">
+            {/* Search Input - Full width on mobile, 50% on tablet+ */}
+            <div className="col-12 col-md-6 col-lg-5">
                 <input
-                type="text"
-                className="form-control shadow-none green-input-border"
-                placeholder="Search by label"
-                ref={searchRef}
+                    type="text"
+                    className="form-control shadow-none green-input-border"
+                    placeholder="Search by label"
+                    ref={searchRef}
                 />
             </div>
 
-            <div className="col-3">
+            {/* Filter Dropdown - Full width on mobile, 25% on desktop */}
+            <div className="col-12 col-md-4 col-lg-4">
                 <select
                 className="form-select shadow-none green-input-border"
                 ref={filterRef}
@@ -256,32 +256,36 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                 </select>
             </div>
 
-            <div className="col-2 d-flex align-items-center gap-2 justify-content-center w-auto">
-               <Tooltip title="Search" arrow>
-                    <IconButton sx={{ color: MAIN_COLOR }} onClick={handleSearch}>
-                        <SearchIcon />
-                    </IconButton>
-               </Tooltip>
+            {/* Action Buttons - Full width on mobile, auto width on tablet+ */}
+            <div className="col-12 col-md-1 d-flex align-items-center gap-2 justify-content-md-start justify-content-end">
+                <Tooltip title="Search" arrow>
+                <IconButton sx={{ color: MAIN_COLOR }} onClick={handleSearch}>
+                    <SearchIcon />
+                </IconButton>
+                </Tooltip>
 
                 <Tooltip title="Clear" arrow>
-                    <IconButton sx={{ color: "#9e9e9eff" }} onClick={handleReset}>
-                        <RestartAltIcon />
-                    </IconButton>
+                <IconButton sx={{ color: "#9e9e9eff" }} onClick={handleReset}>
+                    <RestartAltIcon />
+                </IconButton>
                 </Tooltip>
             </div>
 
-            <div className="col-auto d-flex align-items-center">
-                <div className="vr mx-3 mt-1" style={{ height: "28px", opacity: 0.4 }}></div>
-                    <h3 className="fw-light mb-0">{todos.length} Todo(s)</h3>
-                </div>
+            {/* Todo Count - Full width on mobile, auto width on tablet+ */}
+            <div className="d-none d-lg-flex col-lg-2 justify-content-lg-end align-items-center">
+                {/* Hide divider on mobile, show on tablet+ */}
+                <div className="vr mx-4 mt-1" style={{ height: "28px", opacity: 0.4 }}></div>
+                <h3 className="fw-light mb-0">{todos.length} Todo(s)</h3>
             </div>
+
+        </div>
         )
     }
 
     return(
         <div className="container">
             <Scroller/>
-            <div className="my-2" style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1050, width: '350px' }}>
+            <div className="alert-container">
                 <Collapse in={isAddAlertShowed}>
                     <Alert
                         variant="filled"
@@ -366,9 +370,9 @@ export default function TodoList({todos, onToggleTodo, onAddTodo, onDeleteTodo, 
                         <th>Status</th>
                         <th>Label</th>
                         <th>Priority</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Tag</th>
+                        <th className="d-none d-md-table-cell">Date</th>
+                        <th className="d-none d-md-table-cell">Time</th>
+                        <th className="d-none d-md-table-cell">Tag</th>
                         <th>Operations</th>
                     </tr>
                 </thead>

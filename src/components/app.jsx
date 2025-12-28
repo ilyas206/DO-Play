@@ -65,7 +65,7 @@ export default function App() {
     }
     
     return(
-        <div className="container m-5">
+        <div className="container mt-4">
             <TodoList filter={filter} setFilter={setFilter} setSearch={setSearch} onToggleTodo={toggleTodo} onAddTodo={handleAddTodo} onDeleteTodo={handleDeleteTodo} onEditTodo={handleEditTodo} todos={filteredTodos} />
         </div>
     )
